@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import axios from "axios";
+import api from "../../api";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#A28FFF"];
@@ -11,7 +12,7 @@ const DashboardAdmin = () => {
 
   const fetchCategoryStats = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/items");
+      const res = await api.get("/api/items");
       const items = res.data.items;
 
       // Hitung jumlah barang per kategori

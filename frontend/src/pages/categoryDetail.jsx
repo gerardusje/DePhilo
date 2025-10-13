@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
+import api from "../api";
 import { Range, getTrackBackground } from "react-range";
 
 export default function CategoryDetail() {
@@ -26,7 +27,7 @@ export default function CategoryDetail() {
         setLoading(true);
         setError(null);
 
-        const res = await axios.get("http://localhost:5000/api/items", {
+        const res = await api.get("/items", {
           params: { category: categoryName },
         });
 

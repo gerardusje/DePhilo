@@ -37,19 +37,20 @@ const SectionTitle = ({ title, subtitle, color = "text-primary" }) => (
 
 const Home = () => {
   return (
-    <div className="font-sans text-dark scroll-smooth">
+
+    <div className="font-sans text-darkbg scroll-smooth">
       {/* ===== Hero Section ===== */}
       <Hero />
-
+      <div className="h-[2px] bg-gradient-to-r from-transparent via-border to-transparent my-10" />
       {/* ===== About Section ===== */}
-      <section className="relative py-20 sm:py-24 px-6 text-center bg-dark text-light overflow-hidden">
+      <section className="relative py-20 sm:py-24 px-6 text-center bg-darkbg text-light overflow-hidden">
         {/* Decorative gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-dark/90 via-dark/80 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary via-darkbg to-primary  pointer-events-none" />
 
         <div className="relative z-10 max-w-3xl mx-auto">
           <SectionTitle
             title="Tentang Kami"
-            color="text-primary"
+            color="text-accent"
             subtitle="Kisah di balik setiap benda antik dan nilai sejarah yang hidup kembali."
           />
 
@@ -64,8 +65,8 @@ const Home = () => {
 
           <Link
             to="/about"
-            className="inline-block px-8 py-3 border border-accent text-accent rounded-md font-medium 
-                       hover:bg-accent hover:text-dark transition-all duration-300 shadow-md hover:shadow-lg 
+            className="inline-block px-8 py-4 bg-secondary text-light font-semibold rounded-md shadow-md 
+                       hover:bg-accent hover:text-darkbg transition-all duration-300 transform hover:scale-[1.03]
                        hover:ring-2 hover:ring-accent/40 hover:ring-offset-2"
           >
             Lanjutkan Kisah
@@ -77,7 +78,7 @@ const Home = () => {
       </section>
 
       {/* ===== Divider ===== */}
-      <div className="h-[1px] bg-gradient-to-r from-transparent via-border to-transparent my-16" />
+      <div className="h-[2px] bg-gradient-to-r from-transparent via-border to-transparent my-10" />
 
       {/* ===== Services Section ===== */}
       <section className="py-20 sm:py-24 px-6 bg-background text-center">
@@ -97,7 +98,7 @@ const Home = () => {
               <div className="h-16 w-16 flex items-center justify-center bg-primary/10 rounded-full mb-5 group-hover:bg-primary/20 transition">
                 <Icon className="h-10 w-10 text-primary group-hover:text-accent transition-colors duration-300" />
               </div>
-              <h3 className="text-xl font-semibold text-dark mb-3">{title}</h3>
+              <h3 className="text-xl font-semibold text-darkbg mb-3">{title}</h3>
               <p className="text-muted text-center leading-relaxed text-balance">{desc}</p>
             </div>
           ))}
@@ -105,10 +106,10 @@ const Home = () => {
       </section>
 
       {/* ===== Divider ===== */}
-      <div className="h-[1px] bg-gradient-to-r from-transparent via-border to-transparent my-16" />
+      <div className="h-[2px] bg-gradient-to-r from-transparent via-border to-transparent my-10" />
 
       {/* ===== Call-to-Action (Galeri) ===== */}
-      <section className="relative py-24 px-6 text-center overflow-hidden bg-gradient-to-br from-secondary via-dark to-black">
+      <section className="relative py-24 px-6 text-center overflow-hidden bg-gradient-to-br from-light via-darkbg to-light">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/old-wall.png')] opacity-10 pointer-events-none" />
 
         <div className="relative z-10 max-w-3xl mx-auto">
@@ -121,16 +122,17 @@ const Home = () => {
 
           <Link
             to="/galeri"
-            className="inline-block px-8 py-4 bg-primary text-light font-semibold rounded-md shadow-md 
-                       hover:bg-accent hover:text-dark transition-all duration-300 transform hover:scale-[1.03]
+            className="inline-block px-8 py-4 bg-secondary text-light font-semibold rounded-md shadow-md 
+                       hover:bg-accent hover:text-darkbg transition-all duration-300 transform hover:scale-[1.03]
                        hover:ring-2 hover:ring-accent/40 hover:ring-offset-2"
           >
             Lihat Galeri
           </Link>
         </div>
 
-        <div className="absolute inset-0 bg-gradient-to-t from-dark/50 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-darkbg/50 via-transparent to-transparent pointer-events-none" />
       </section>
+      <div className="h-[2px] bg-gradient-to-r from-transparent via-border to-transparent my-10" />
     </div>
   );
 };

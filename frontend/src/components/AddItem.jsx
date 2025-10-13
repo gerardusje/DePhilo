@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
+import api from "../api"; // sesuaikan path
+
+// contoh request
+const res = await api.get("/items");
+
 
 const AddItem = ({ onAdded }) => {
   const [name, setName] = useState("");
@@ -27,7 +32,7 @@ const AddItem = ({ onAdded }) => {
     }
 
     try {
-      await axios.post("http://localhost:5000/items", formData);
+      await api.post("/items", formData);
       setName(""); setYear(""); setOrigin(""); setDescription(""); setPrice(""); setFiles([]);
       onAdded(); // refresh list
     } catch (err) {

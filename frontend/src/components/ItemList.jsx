@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api";
 
 const ItemList = () => {
   const [items, setItems] = useState([]);
 
   const fetchItems = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/items");
+      const res = await api.get("/items");
       setItems(res.data);
     } catch (err) {
       console.error(err);
@@ -16,7 +16,7 @@ const ItemList = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Yakin ingin menghapus barang ini?")) return;
     try {
-      await axios.delete(`http://localhost:5000/items/${id}`);
+      await api.delete(`/items/${id}`);
       fetchItems();
     } catch (err) {
       console.error(err);

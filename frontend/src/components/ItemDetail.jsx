@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
+import api from "../api";
 
 export default function ItemDetail() {
   const { categoryName, itemId } = useParams();
@@ -15,7 +16,7 @@ export default function ItemDetail() {
       setLoading(true);
       setError(null);
       try {
-        const res = await axios.get(`http://localhost:5000/api/items/${itemId}`);
+        const res = await api.get(`/items/${itemId}`);
         const data = res.data?.item || res.data;
         if (!data || !data._id) {
           setError("Item tidak ditemukan di server.");

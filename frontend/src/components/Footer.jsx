@@ -20,52 +20,84 @@ const sections = [
 
 const Footer = () => {
   return (
-    <footer className="bg-dark text-light py-10 border-t border-border">
-      <div className="max-w-7xl mx-auto px-6 sm:px-10">
-        {/* Top: Logo & Links */}
-        <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-10">
-          
-          {/* Brand section */}
-          <div className="text-center md:text-left">
-            <h1 className="text-2xl font-serif font-bold text-primary">
-              De Philo Cafe Art & Antique
-            </h1>
-            <p className="text-accent mt-2 italic">
-              Keindahan Waktu yang Abadi
-            </p>
-          </div>
+    <footer className="relative  bg-gradient-to-br from-primary via-darkbg to-primary  text-light border-t overflow-hidden">
+  {/* Decorative glow / texture */}
+  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/old-wall.png')] opacity-10 mix-blend-overlay pointer-events-none"></div>
+  <div className="absolute inset-0 bg-gradient-to-t from-dark/40 via-transparent to-transparent pointer-events-none"></div>
 
-          {/* Dynamic link sections */}
-          <div className="flex flex-wrap justify-center md:justify-end gap-10">
-            {sections.map((section, index) => (
-              <div key={index}>
-                <h3 className="font-semibold mb-3 text-accent uppercase tracking-wide text-sm">
-                  {section.title}
-                </h3>
-                <ul className="space-y-2">
-                  {section.links.map((link, i) => (
-                    <li key={i}>
-                      <a
-                        href={link.href}
-                        className="text-muted hover:text-primary transition-colors duration-200"
-                      >
-                        {link.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
+  {/* Main container */}
+  <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-10 py-16">
 
-        {/* Bottom copyright */}
-        <div className="mt-10 pt-4 border-t border-border text-center text-muted text-sm">
-          &copy; {new Date().getFullYear()}{" "}
-          <span className="text-accent">De Philo Cafe Art & Antique</span>. All rights reserved.
-        </div>
+    {/* === Top: Brand & Links === */}
+    <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-12">
+      
+      {/* === Brand Section === */}
+      <div className="text-center md:text-left space-y-3">
+        <h1 className="text-3xl sm:text-4xl font-serif font-bold text-light drop-shadow-md">
+          De Philo Cafe Art & Antique
+        </h1>
+        <p className="text-accent italic text-base tracking-wide">
+          “Keindahan Waktu yang Abadi”
+        </p>
+        <p className="text-muted max-w-sm mx-auto md:mx-0 text-sm leading-relaxed">
+          Tempat di mana seni, sejarah, dan cita rasa bertemu.  
+          Kami melestarikan nilai keindahan dari masa lalu untuk generasi kini.
+        </p>
       </div>
-    </footer>
+
+      {/* === Dynamic Link Sections === */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-10 text-center md:text-left">
+        {sections.map((section, index) => (
+          <div key={index}>
+            <h3 className="font-semibold mb-3 text-accent uppercase tracking-wider text-sm border-b border-accent/40 inline-block pb-1">
+              {section.title}
+            </h3>
+            <ul className="space-y-2 mt-3">
+              {section.links.map((link, i) => (
+                <li key={i}>
+                  <a
+                    href={link.href}
+                    className="text-light/80 hover:text-accent transition-colors duration-200 text-sm sm:text-base"
+                  >
+                    {link.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* === Divider === */}
+    <div className="mt-12 mb-6 h-[1px] bg-gradient-to-r from-transparent via-border to-transparent"></div>
+
+    {/* === Bottom: Copyright & Socials === */}
+    <div className="flex flex-col sm:flex-row justify-between items-center text-center sm:text-left text-muted text-sm">
+      <p>
+        &copy; {new Date().getFullYear()}{" "}
+        <span className="text-accent font-semibold">
+          De Philo Cafe Art & Antique
+        </span>
+        . All rights reserved.
+      </p>
+
+      {/* Optional Social Icons */}
+      <div className="flex gap-4 mt-4 sm:mt-0">
+        <a href="#" className="hover:text-accent transition">
+          <i className="fa-brands fa-facebook-f"></i>
+        </a>
+        <a href="#" className="hover:text-accent transition">
+          <i className="fa-brands fa-instagram"></i>
+        </a>
+        <a href="#" className="hover:text-accent transition">
+          <i className="fa-brands fa-x-twitter"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
   );
 };
 
