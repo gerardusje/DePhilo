@@ -15,8 +15,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Route utama (root)
-
 
 // koneksi MongoDB
 mongoose.connect(process.env.MONGO_URI)
