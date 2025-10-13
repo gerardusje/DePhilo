@@ -1,0 +1,30 @@
+# ==============================
+# Frontend (React + Tailwind)
+# ==============================
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+frontend/.env
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.vscode/
+
+# ==============================
+# Backend (Node.js)
+# ==============================
+backend/node_modules/
+backend/*.log
+backend/npm-debug.log*
+backend/yarn-debug.log*
+backend/yarn-error.log*
+backend/.env
+backend/dist/
+backend/build/
+backend/.vscode/
+
+# ==============================
+# OS / System files
+# ==============================
+.DS_Store
+Thumbs.db
