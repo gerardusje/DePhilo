@@ -1,6 +1,5 @@
-// src/App.jsx
-import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import PublicLayout from "./components/layout/publicLayout";
 
 // Pages
 import Home from "./pages/Home";
@@ -10,43 +9,55 @@ import Galeri from "./pages/Galeri";
 import CategoryDetail from "./pages/categoryDetail";
 import ItemDetail from "./components/ItemDetail";
 import Contact from "./pages/Contact";
-import AdminPage from "./pages/AdminPage";
+import AdminPage from "./pages/adminPages/AdminPage";
+import BarangPage from "./pages/adminPages/barangPage";
 import AdminLogin from "./pages/AdminLogin";
-// Components
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-
+import AdminRoute from "./components/routes/AdminRoutes";
+import DashboardAdmin from "./pages/adminPages/DasboardAdmin";
 function App() {
   return (
     <Router>
-      <div className="App font-sans flex flex-col min-h-screen">
-        {/* Navbar */}
-        <Navbar />
+      <Routes>
+        {/* Public Layout */}
+        <Route path="/" element={<PublicLayout />}>
+          <Route index element={<Home />} />
+          <Route path="about" element={<About />} />
+          <Route path="services" element={<Services />} />
+          <Route path="galeri" element={<Galeri />} />
+          <Route path="contact" element={<Contact />} />
+          <Route path="galeri/:categoryName" element={<CategoryDetail />} />
+          <Route path="galeri/:categoryName/:itemId" element={<ItemDetail />} />
+        </Route>
 
-        {/* Routes */}
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/galeri" element={<Galeri />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/galeri/:categoryName" element={<CategoryDetail />} />
-            <Route path="/adminPage" element={<AdminPage />} />
-            <Route path="/galeri/:categoryName/:itemId" element={<ItemDetail />} />
+        {/* Admin login */}
+        <Route path="/login" element={<AdminLogin />} />
 
-            <Route path="/admin/login" element={<AdminLogin />} />
-
-            {/* <Route path="/galeri/:categoryName/:itemId" element={<ItemDetail />} /> */}
-
-
-            {/* Bisa tambah halaman lain jika dibutuhkan */}
-          </Routes>
-        </main>
-
-        {/* Footer */}
-        <Footer />
-      </div>
+        {/* Admin dashboard (protected) */}
+        <Route
+          path="/admin/*"
+          element={
+            <AdminRoute>
+              <AdminPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/barang"
+          element={
+            <AdminRoute>
+              <BarangPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <AdminRoute>
+              <DashboardAdmin />
+            </AdminRoute>
+          }
+        />
+      </Routes>
     </Router>
   );
 }

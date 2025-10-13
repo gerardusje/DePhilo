@@ -12,8 +12,12 @@ export default function AdminLogin() {
     e.preventDefault();
     try {
       const res = await axios.post("http://localhost:5000/api/admin/login", { username, password });
+
+      // Simpan token
       localStorage.setItem("adminToken", res.data.token);
-      navigate("/"); // redirect ke home atau dashboard
+
+      // Redirect ke dashboard admin
+      navigate("/admin"); // <-- ganti "/" menjadi "/admin"
     } catch (err) {
       setError(err.response?.data?.message || "Login gagal");
     }

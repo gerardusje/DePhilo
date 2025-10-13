@@ -1,3 +1,4 @@
+// routes/item.js
 import express from "express";
 import multer from "multer";
 import cloudinary from "../config/cloudinary.js";
@@ -9,37 +10,49 @@ const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-// ===== GET all items (optionally filter & sort) =====
+// Helper: upload file buffer ke Cloudinary
+const uploadToCloudinary = (fileBuffer) =>
+  new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "pusat-antik" },
+      (error, result) => (result ? resolve(result) : reject(error))
+    );
+    stream.end(fileBuffer);
+  });
+
+// ==========================
+// GET all items (filter/search/sort)
+// ==========================
 router.get("/", async (req, res) => {
   try {
-    const { category, priceMin, priceMax, sortField, sortOrder } = req.query;
+    const { category, priceMin, priceMax, search, sortField, sortOrder } = req.query;
     const filter = {};
 
-    // filter category
     if (category) filter.category = category;
-
-    // filter harga
     if (priceMin) filter.price = { ...filter.price, $gte: Number(priceMin) };
     if (priceMax) filter.price = { ...filter.price, $lte: Number(priceMax) };
+    if (search) filter.name = { $regex: search, $options: "i" };
 
-    // build query
     let query = Item.find(filter);
 
-    // sort
     if (sortField) {
       const order = sortOrder === "desc" ? -1 : 1;
       query = query.sort({ [sortField]: order });
+    } else {
+      query = query.sort({ createdAt: -1 }); // default sort newest
     }
 
     const items = await query.exec();
-    res.json(items);
+    res.json({ total: items.length, items });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Terjadi kesalahan server" });
   }
 });
 
-// ===== GET item by ID =====
+// ==========================
+// GET item by ID
+// ==========================
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -49,27 +62,24 @@ router.get("/:id", async (req, res) => {
     const item = await Item.findById(id);
     if (!item) return res.status(404).json({ message: "Item tidak ditemukan" });
 
-    res.json(item);
+    res.json({ item });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Terjadi kesalahan server" });
   }
 });
 
-// ===== POST create new item (admin only) =====
+// ==========================
+// POST create new item (admin only)
+// ==========================
 router.post("/", verifyAdmin, upload.single("image"), async (req, res) => {
   try {
     const { name, year, description, price, category } = req.body;
-    if (!req.file) return res.status(400).json({ message: "Gambar wajib diunggah" });
+    const priceNumber = Number(price);
 
-    const uploadToCloudinary = (fileBuffer) =>
-      new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          { folder: "pusat-antik" },
-          (error, result) => (result ? resolve(result) : reject(error))
-        );
-        stream.end(fileBuffer);
-      });
+    if (!name || !priceNumber || !req.file) {
+      return res.status(400).json({ message: "Nama, harga, dan gambar wajib diisi" });
+    }
 
     const result = await uploadToCloudinary(req.file.buffer);
 
@@ -77,20 +87,22 @@ router.post("/", verifyAdmin, upload.single("image"), async (req, res) => {
       name,
       year,
       description,
-      price,
+      price: priceNumber,
       category,
       imageUrl: result.secure_url,
     });
 
     await newItem.save();
-    res.json({ message: "Barang berhasil ditambahkan", item: newItem });
+    res.status(201).json({ message: "Barang berhasil ditambahkan", item: newItem });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Terjadi kesalahan server" });
   }
 });
 
-// ===== PUT update item (admin only) =====
+// ==========================
+// PUT update item (admin only)
+// ==========================
 router.put("/:id", verifyAdmin, upload.single("image"), async (req, res) => {
   try {
     const { id } = req.params;
@@ -102,34 +114,28 @@ router.put("/:id", verifyAdmin, upload.single("image"), async (req, res) => {
 
     const { name, year, description, price, category } = req.body;
 
-    // Update gambar jika ada
     if (req.file) {
-      const result = await new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          { folder: "pusat-antik" },
-          (error, result) => (result ? resolve(result) : reject(error))
-        );
-        stream.end(req.file.buffer);
-      });
+      const result = await uploadToCloudinary(req.file.buffer);
       item.imageUrl = result.secure_url;
     }
 
-    // Update field jika ada
-    item.name = name ?? item.name;
-    item.year = year ?? item.year;
-    item.description = description ?? item.description;
-    item.price = price ?? item.price;
-    item.category = category ?? item.category;
+    if (name) item.name = name;
+    if (year) item.year = year;
+    if (description) item.description = description;
+    if (price) item.price = Number(price);
+    if (category) item.category = category;
 
     await item.save();
-    res.json(item);
+    res.json({ message: "Barang berhasil diperbarui", item });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Terjadi kesalahan server" });
   }
 });
 
-// ===== DELETE item (admin only) =====
+// ==========================
+// DELETE item (admin only)
+// ==========================
 router.delete("/:id", verifyAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -139,11 +145,27 @@ router.delete("/:id", verifyAdmin, async (req, res) => {
     const item = await Item.findByIdAndDelete(id);
     if (!item) return res.status(404).json({ message: "Item tidak ditemukan" });
 
-    res.json({ message: "Item berhasil dihapus" });
+    res.json({ message: "Barang berhasil dihapus" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Terjadi kesalahan server" });
   }
 });
+
+
+// GET /api/items/stats/category
+router.get("/stats/category", async (req, res) => {
+  try {
+    const stats = await Item.aggregate([
+      { $group: { _id: "$category", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+    ]);
+    res.json(stats);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Terjadi kesalahan server" });
+  }
+});
+
 
 export default router;
