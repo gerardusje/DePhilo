@@ -1,11 +1,10 @@
 // src/pages/AdminPage.jsx
 import React from "react";
-// import DashboardLayout from "../components/Layout/DashboardLayout";
-import DashboardLayout from "../../components/layout/DashboardLayout";
+import AdminLayout from "../../components/layout/AdminLayout";
 
 const AdminPage = () => {
   return (
-    <DashboardLayout>
+    <AdminLayout>
       <div className="p-4 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">
           Selamat Datang di Admin Dashboard
@@ -15,7 +14,7 @@ const AdminPage = () => {
         </p>
         {/* Konten tambahan halaman admin bisa ditambahkan di sini */}
       </div>
-    </DashboardLayout>
+    </AdminLayout>
   );
 };
 

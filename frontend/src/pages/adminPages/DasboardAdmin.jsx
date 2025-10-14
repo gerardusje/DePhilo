@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import DashboardLayout from "../../components/layout/DashboardLayout";
+import AdminLayout from "../../components/layout/AdminLayout";
+
+
 import axios from "axios";
 import api from "../../api";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
@@ -40,10 +42,10 @@ const DashboardAdmin = () => {
     fetchCategoryStats();
   }, []);
 
-  if (loading) return <DashboardLayout>Loading...</DashboardLayout>;
+  if (loading) return <AdminLayout>Loading...</AdminLayout>;
 
   return (
-    <DashboardLayout>
+    <AdminLayout>
       <div className="p-6 bg-gray-100 min-h-full">
         <h2 className="text-2xl font-bold mb-6">Statistik Kategori Barang</h2>
 
@@ -70,7 +72,7 @@ const DashboardAdmin = () => {
           </PieChart>
         )}
       </div>
-    </DashboardLayout>
+    </AdminLayout>
   );
 };
 

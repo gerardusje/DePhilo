@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
-import api from "../api";
+import api from "../../../api";
 import { Range, getTrackBackground } from "react-range";
 
 export default function CategoryDetail() {

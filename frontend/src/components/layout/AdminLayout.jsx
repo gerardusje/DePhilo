@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import Header from "./Header";
-import Sidebar from "./Sidebar";
+// import Header from "../admin/Header";
+import Header from "../admin/Header"
+import Sidebar from "../admin/Sidebar";
 
-const DashboardLayout = ({ children }) => {
+const AdminLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
@@ -22,4 +23,4 @@ const DashboardLayout = ({ children }) => {
   );
 };
 
-export default DashboardLayout;
+export default AdminLayout;

@@ -1,9 +1,9 @@
 import React from "react";
-import HeroSection from "../components/sections/HeroSection";
-import AboutSection from "../components/sections/AboutSection";
-import ServicesSection from "../components/sections/ServicesSection";
-import CTASection from "../components/sections/CTASection";
-import TestimonialsSection from "../components/sections/TestimonioalSection";
+import HeroSection from "./sections/HeroSection";
+import AboutSection from "./sections/AboutSection";
+import ServicesSection from "./sections/ServicesSection";
+import CTASection from "./sections/CTASection";
+import TestimonialsSection from "./sections/TestimonioalSection";
 
 const Home = () => {
   return (

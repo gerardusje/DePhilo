@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 // import SectionTitle from "./SectionTitle";
-import SectionTitle from "../layout/SectionTitle";
-import CornerOrnament from "../common/ornament/CornerOrnament"; // contoh ornamen SVG
+import SectionTitle from "../../../../components/common/SectionTitle";
+import CornerOrnament from "../../../../components/ornament/CornerOrnament"; // contoh ornamen SVG
 import Wave from "react-wavify";
 
 export default function AboutSection() {

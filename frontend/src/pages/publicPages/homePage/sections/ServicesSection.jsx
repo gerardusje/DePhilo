@@ -1,6 +1,6 @@
 import React from "react";
 import { ShoppingCartIcon, WrenchIcon, LightBulbIcon } from "@heroicons/react/24/outline";
-import SectionTitle from "../layout/SectionTitle";
+import SectionTitle from "../../../../components/common/SectionTitle";
 
 const services = [
   {

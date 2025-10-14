@@ -1,5 +1,5 @@
 import React from "react";
-import aboutImg from "../assets/img/about-antique.png" // kamu bisa ganti pakai gambar sendiri
+import aboutImg from "../../../assets/img/about-antique.png" // kamu bisa ganti pakai gambar sendiri
 
 const Paragraph = ({ children, className = "" }) => (
     <p className={`text-gray-700 leading-relaxed text-lg mb-4 ${className}`}>

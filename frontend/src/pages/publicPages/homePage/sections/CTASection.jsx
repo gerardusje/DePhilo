@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import SectionTitle from "../layout/SectionTitle";
+import SectionTitle from "../../../../components/common/SectionTitle";
 
 export default function CTASection() {
   return (

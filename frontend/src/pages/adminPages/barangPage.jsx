@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import DashboardLayout from "../../components/layout/DashboardLayout";
+import AdminLayout from "../../components/layout/AdminLayout";
 import ModalBarang from "../../components/admin/modalBarang";
 
 const BarangPage = () => {
@@ -71,10 +71,10 @@ const BarangPage = () => {
     }
   };
 
-  if (loading) return <DashboardLayout>Loading...</DashboardLayout>;
+  if (loading) return <AdminLayout>Loading...</AdminLayout>;
 
   return (
-    <DashboardLayout>
+    <AdminLayout>
       <div className="p-6 bg-gray-100 min-h-full">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">Daftar Barang</h2>
@@ -145,7 +145,7 @@ const BarangPage = () => {
           itemData={editItem}
         />
       </div>
-    </DashboardLayout>
+    </AdminLayout>
   );
 };
 
