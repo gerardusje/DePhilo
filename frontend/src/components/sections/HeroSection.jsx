@@ -1,8 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
-import bg from "../assets/img/hero-bg.png";
+import bg from "../../assets/img/hero-bg.png";
 
-export default function Hero() {
+export default function HeroSection() {
   return (
     <section
       className="relative h-screen w-full overflow-hidden"
@@ -12,7 +12,7 @@ export default function Hero() {
       <motion.div
         className="absolute inset-0 bg-cover bg-no-repeat bg-center"
         style={{ backgroundImage: `url(${bg})` }}
-        initial={{ y: 0 ,scale:1.1,filter:"blur(1px)"}}
+        initial={{ y: 0 ,scale:1.1,filter:"blur(0px)"}}
         animate={{ y: [-20, 20],scale:1.2,filter: ["blur(4px)", "blur(0px)", "blur(0px)"] }}
         transition={{ yoyo: Infinity, duration: 15, ease: "easeInOut" }}
         aria-hidden="true"
