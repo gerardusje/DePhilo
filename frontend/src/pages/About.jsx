@@ -47,12 +47,51 @@ export default function About() {
             </div>
 
             {/* Bagian tambahan dengan kutipan elegan */}
-            <div className="mt-20 text-center px-6">
+            <div className="mt-10 text-center px-6">
                 <blockquote className="text-2xl md:text-3xl italic font-serif text-yellow-900">
                     “Barang antik bukan sekadar benda lama — ia adalah jembatan antara masa lalu dan masa kini.”
                 </blockquote>
                 <p className="mt-4 text-gray-600">— De Philo</p>
             </div>
+            <div className="h-[2px] bg-gradient-to-r from-transparent via-border to-transparent my-10" />
+
+
+            <section className="py-20 bg-neutral-50">
+                <div className="max-w-6xl mx-auto px-6 md:px-10 grid md:grid-cols-2 gap-10 items-center">
+
+                    {/* Kiri: Detail Alamat */}
+                    <div>
+                        <h2 className="text-4xl md:text-5xl font-serif font-bold text-primary mb-6">
+                            Lokasi Kami
+                        </h2>
+                        <p className="text-gray-700 text-lg leading-relaxed mb-4">
+                            De Philo Cafe Art & Antique<br />
+                            Jl. Contoh No.123, Kota Contoh, Provinsi Contoh, Indonesia
+                        </p>
+                        <p className="text-gray-700 text-lg leading-relaxed mb-2">
+                            Jam Operasional:<br />
+                            Senin - Jumat: 10.00 - 20.00 WIB<br />
+                            Sabtu - Minggu: 09.00 - 21.00 WIB
+                        </p>
+                        <p className="text-gray-700 text-lg leading-relaxed">
+                            Hubungi kami: <a href="tel:+62123456789" className="text-accent font-semibold">+62 123 4567 89</a>
+                        </p>
+                    </div>
+
+                    {/* Kanan: Peta Google Maps embed biasa */}
+                    <div className="h-[350px] md:h-[450px] w-full rounded-2xl overflow-hidden shadow-lg">
+                        <iframe
+                            title="Lokasi De Philo"
+                            src="https://www.google.com/maps?q=-7.7828588,110.3670062&hl=es;z=16&output=embed"
+                            width="100%"
+                            height="100%"
+                            allowFullScreen
+                            loading="lazy"
+                            className="border-0"
+                        ></iframe>
+                    </div>
+                </div>
+            </section>
         </main>
     );
 }
