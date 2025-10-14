@@ -62,7 +62,7 @@ const Services = () => {
             </section>
 
             {/* ===== Call to Action ===== */}
-            <section className="relative py-28 px-6 text-center bg-gradient-to-b from-light/65  to-accent overflow-hidden">
+            <section className="relative py-28 px-6 text-center bg-gradient-to-b from-light/65  via-accent/30 to-light overflow-hidden">
   {/* Decorative pattern */}
   <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/asfalt-light.png')] opacity-10 pointer-events-none" />
 
