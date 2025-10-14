@@ -45,7 +45,7 @@ const Home = () => {
       {/* ===== About Section ===== */}
       <section className="relative py-20 sm:py-24 px-6 text-center bg-darkbg text-light overflow-hidden">
         {/* Decorative gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary via-darkbg to-primary  pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-darkbg via-secondary to-darkbg  pointer-events-none" />
 
         <div className="relative z-10 max-w-3xl mx-auto">
           <SectionTitle
@@ -109,7 +109,7 @@ const Home = () => {
       <div className="h-[2px] bg-gradient-to-r from-transparent via-border to-transparent my-10" />
 
       {/* ===== Call-to-Action (Galeri) ===== */}
-      <section className="relative py-24 px-6 text-center overflow-hidden bg-gradient-to-br from-light via-darkbg to-light">
+      <section className="relative py-24 px-6 text-center overflow-hidden bg-gradient-to-b from-secondary to-black">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/old-wall.png')] opacity-10 pointer-events-none" />
 
         <div className="relative z-10 max-w-3xl mx-auto">
