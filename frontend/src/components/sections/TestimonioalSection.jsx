@@ -1,6 +1,6 @@
 // src/components/TestimonialsSection.jsx
 import React from "react";
-import SectionTitle from "../SectionTitle";
+import SectionTitle from "../layout/SectionTitle";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import { FaUserCircle } from "react-icons/fa";

@@ -63,32 +63,33 @@ const Services = () => {
 
             {/* ===== Call to Action ===== */}
             <section className="relative py-28 px-6 text-center bg-gradient-to-b from-light/65  via-accent/30 to-light overflow-hidden">
-  {/* Decorative pattern */}
-  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/asfalt-light.png')] opacity-10 pointer-events-none" />
+                {/* Decorative pattern */}
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/asfalt-light.png')] opacity-10 pointer-events-none" />
 
-  {/* Title */}
-  <h2 className="text-4xl sm:text-5xl font-serif font-bold text-primary mb-4 relative z-10 drop-shadow-xl">
-    Siap Menjelajahi?
-  </h2>
+                {/* Title */}
+                <h2 className="text-4xl sm:text-5xl font-serif font-bold text-primary mb-4 relative z-10 drop-shadow-xl">
+                    Siap Menjelajahi?
+                </h2>
 
-  {/* Subtitle */}
-  <p className="text-gray-900/90 mb-10 max-w-2xl mx-auto relative z-10 text-lg drop-shadow-sm">
-    Temukan koleksi antik unik kami atau konsultasikan barang Anda dengan para ahli De Philo.
-  </p>
+                {/* Subtitle */}
+                <p className="text-gray-900/90 mb-10 max-w-2xl mx-auto relative z-10 text-lg drop-shadow-sm">
+                    Temukan koleksi antik unik kami atau konsultasikan barang Anda dengan para ahli De Philo.
+                </p>
 
-  {/* CTA Button */}
-  <Link
-    to="/galeri"
-    className="relative inline-block px-8 py-4 bg-primary text-light font-semibold rounded-md shadow-md 
+                {/* CTA Button */}
+                <Link
+                    to="/galeri"
+                    className="relative inline-block px-8 py-4 bg-primary text-light font-semibold rounded-md shadow-md 
            hover:bg-accent hover:text-dark transition-all duration-300 transform hover:scale-[1.03]
            hover:ring-2 hover:ring-accent/40 hover:ring-offset-2 hover:brightness-110 z-10"
-  >
-    Lihat Galeri
-  </Link>
+                >
+                    Lihat Galeri
+                </Link>
 
-  {/* Soft glow */}
-  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-accent/30 rounded-full blur-3xl opacity-30 pointer-events-none" />
-</section>
+                {/* Soft glow */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-accent/30 rounded-full blur-3xl opacity-30 pointer-events-none" />
+            </section>
+
 
         </div>
     );
