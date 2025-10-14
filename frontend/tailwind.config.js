@@ -17,9 +17,10 @@ export default {
     },
   },
   safelist: [
-    { pattern: /from-(.*)/ },
-    { pattern: /via-(.*)/ },
-    { pattern: /to-(.*)/ },
-  ],
+  {
+    pattern: /(from|via|to)-(primary|secondary|accent|background|darkbg|light|muted|border)/,
+  },
+],
+
   plugins: [],
 };
