@@ -1,78 +1,118 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, {useState, useEffect, useMemo } from "react";
+import SidebarFilter from "./SidebarFilter";
+import useFetchItems from "./hooks/useFetchItem";
+import { formatRupiah } from "./utils/formatRupiah";
+import { useNavigate } from "react-router-dom";
 
-const categories = [
-  {
-    slug: "kain",
-    name: "Kain",
-    image: "https://images.unsplash.com/photo-1612438015378-3f8f9d799ff3",
-    description: "Koleksi kain tradisional Nusantara dengan motif dan teknik langka.",
-  },
-  {
-    slug: "patung",
-    name: "Patung",
-    image: "https://images.unsplash.com/photo-1583417264725-761b1a1a8f52",
-    description: "Patung antik dari berbagai daerah dan masa, penuh makna dan sejarah.",
-  },
-  {
-    slug: "topeng",
-    name: "Topeng",
-    image: "https://images.unsplash.com/photo-1617026061537-2b49d02b12c2",
-    description: "Topeng kayu dan logam yang merefleksikan seni pertunjukan klasik Indonesia.",
-  },
-  {
-    slug: "lukisan",
-    name: "Lukisan",
-    image: "https://images.unsplash.com/photo-1545235617-9465d2a55698",
-    description: "Lukisan klasik dan modern yang menggambarkan keindahan budaya lokal.",
-  },
-  {
-    slug: "furniture",
-    name: "Furniture",
-    image: "https://images.unsplash.com/photo-1567016432779-094069958ea5",
-    description: "Perabot antik dan vintage yang menyimpan cerita dari masa lampau.",
-  },
-];
+export default function Galeri() {
+  const navigate = useNavigate();
+  const { items: allItems, loading, error } = useFetchItems();
+  const [filter, setFilter] = useState({
+    priceRange: [0, 0],
+    categories: [],
+    location: [],
+    sortOption: "",
+  });
 
-export default function Gallery() {
+  // --- Ambil data unik kategori & lokasi
+  const allCategories = useMemo(
+    () => [...new Set((allItems || []).map((item) => item.category))],
+    [allItems]
+  );
+  const allLocation = useMemo(
+    () => [...new Set((allItems || []).map((item) => item.location))],
+    [allItems]
+  );
+
+  // --- Hitung harga minimum & maksimum
+  const minPriceAll = useMemo(() => {
+    if (!allItems?.length) return 0;
+    return Math.min(...allItems.map((item) => item.price));
+  }, [allItems]);
+
+  const maxPriceAll = useMemo(() => {
+    if (!allItems?.length) return 100000;
+    return Math.max(...allItems.map((item) => item.price));
+  }, [allItems]);
+
+  // --- Set default filter harga
+  useEffect(() => {
+    if (allItems?.length > 0) {
+      setFilter((prev) => ({
+        ...prev,
+        priceRange: [minPriceAll, maxPriceAll],
+      }));
+    }
+  }, [allItems, minPriceAll, maxPriceAll]);
+
+  // --- Filter item sesuai kriteria
+  const filteredItems = useMemo(() => {
+    if (!allItems) return [];
+    return allItems
+      .filter((item) => {
+        const inCategory =
+          !filter.categories.length || filter.categories.includes(item.category);
+        const inLocation =
+          !filter.location.length || filter.location.includes(item.location);
+        const inPrice =
+          item.price >= (filter.priceRange?.[0] ?? 0) &&
+          item.price <= (filter.priceRange?.[1] ?? Infinity);
+        return inCategory && inLocation && inPrice;
+      })
+      .sort((a, b) => {
+        if (filter.sortOption === "price_asc") return a.price - b.price;
+        if (filter.sortOption === "price_desc") return b.price - a.price;
+        if (filter.sortOption === "newest")
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        if (filter.sortOption === "oldest")
+          return new Date(a.createdAt) - new Date(b.createdAt);
+        return 0;
+      });
+  }, [allItems, filter]);
+
+  if (loading) return <p className="pt-20 text-center">Loading...</p>;
+  if (error) return <p className="pt-20 text-center">{error}</p>;
+
   return (
-    <main className="min-h-screen bg-[#F8F7F3] py-20">
-      <div className="max-w-7xl mx-auto px-6 md:px-10">
-        <h1 className="text-4xl md:text-5xl font-serif font-bold text-center text-[#B59E6A] mb-12">
-          Galeri Koleksi
-        </h1>
+    <div className="flex pt-20 min-h-screen bg-gray-50 gap-4">
+      {/* Sidebar Sticky */}
+      <aside className="w-64 sticky top-20 h-fit self-start">
+        <SidebarFilter
+          filter={filter}
+          allCategories={allCategories}
+          allLocation={allLocation}
+          minPriceAll={minPriceAll}
+          maxPriceAll={maxPriceAll}
+          onFilterChange={setFilter}
+        />
+      </aside>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {categories.map((item) => (
-            <Link
-              key={item.slug}
-              to={`/galeri/${item.slug}`}
-              className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl hover:ring-4 hover:ring-yellow-200 transition-all duration-500"
+      {/* Konten Galeri */}
+      <div className="flex-1 overflow-y-auto pl-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 pb-10">
+          {filteredItems.map((item) => (
+            <div
+              key={item._id}
+              onClick={() => navigate(`/galeri/${item._id}`, { state: { item } })} // <-- kirim data via state
+              className="cursor-pointer bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow"
             >
-              {/* Image */}
               <img
-                src={item.image}
+                src={item.imageUrl}
                 alt={item.name}
-                loading="lazy"
-                className="w-full h-64 object-cover group-hover:scale-105 group-hover:brightness-110 transition-transform duration-500"
+                className="w-full h-48 object-cover"
               />
-
-              {/* Overlay */}
-              <div className="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-100 md:opacity-0 md:group-hover:opacity-100 transition duration-500 flex flex-col justify-end items-center text-center px-4 pb-6">
-                <h3 className="text-2xl font-bold text-[#F8EBC4] drop-shadow-md translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                  {item.name}
-                </h3>
-                <p className="text-sm text-yellow-100 mt-2 max-w-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  {item.description}
+              <div className="p-3">
+                <h3 className="font-semibold text-yellow-900">{item.name}</h3>
+                <p className="text-sm text-gray-600">{item.year}</p>
+                <p className="text-sm text-gray-700">{item.category}</p>
+                <p className="font-bold text-yellow-700">
+                  Rp{item.price.toLocaleString()}
                 </p>
-                <button className="mt-3 px-4 py-2 bg-yellow-400 text-black font-semibold rounded hover:bg-yellow-500 transition">
-                  Lihat Koleksi
-                </button>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       </div>
-    </main>
+    </div>
   );
 }

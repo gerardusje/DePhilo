@@ -1,20 +1,27 @@
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import PublicLayout from "./components/layout/publicLayout";
 
-// Pages
+// Layouts
+import PublicLayout from "./components/layout/publicLayout";
+import AdminRoute from "./components/routes/AdminRoutes";
+
+// Pages - Public
 import Home from "./pages/publicPages/homePage/Home";
 import About from "./pages/publicPages/aboutPage/About";
 import Services from "./pages/publicPages/servisPage/Services";
 import Galeri from "./pages/publicPages/galeriPage/Galeri";
-import CategoryDetail from "./pages/publicPages/galeriPage/categoryDetail";
-import ItemDetail from "./pages/publicPages/galeriPage/ItemDetail";
+import ItemDetailPage from "./pages/publicPages/galeriPage/itemDetailPage";
 import Contact from "./pages/publicPages/contactPage/Contact";
+
+// Pages - Admin
+import AdminLogin from "./pages/adminPages/AdminLogin";
 import AdminPage from "./pages/adminPages/AdminPage";
 import BarangPage from "./pages/adminPages/barangPage";
-import AdminLogin from "./pages/adminPages/AdminLogin";
-import AdminRoute from "./components/routes/AdminRoutes";
 import DashboardAdmin from "./pages/adminPages/DasboardAdmin";
+
+// Pages - Misc
 import NotFound from "./pages/NotFound";
+
 function App() {
   return (
     <Router>
@@ -24,12 +31,12 @@ function App() {
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
           <Route path="services" element={<Services />} />
-          <Route path="galeri" element={<Galeri />} />
+          <Route path="galeri">
+            <Route index element={<Galeri />} />
+            <Route path=":id" element={<ItemDetailPage />} />
+          </Route>
           <Route path="contact" element={<Contact />} />
-          <Route path="galeri/:categoryName" element={<CategoryDetail />} />
-          <Route path="galeri/:categoryName/:itemId" element={<ItemDetail />} />
           <Route path="*" element={<NotFound />} />
-
         </Route>
 
         {/* Admin login */}

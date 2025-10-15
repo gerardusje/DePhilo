@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../../components/layout/AdminLayout";
-
-
 import axios from "axios";
 import api from "../../api";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
