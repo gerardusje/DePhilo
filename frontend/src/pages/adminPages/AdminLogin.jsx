@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import api from "../../api";
+import api from "@/api";
 import { useNavigate } from "react-router-dom";
 
 export default function AdminLogin() {
@@ -12,7 +12,7 @@ export default function AdminLogin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await api.post("/api/admin/login", { username, password });
+      const res = await api.post("/admin/login", { username, password });
 
       // Simpan token
       localStorage.setItem("adminToken", res.data.token);

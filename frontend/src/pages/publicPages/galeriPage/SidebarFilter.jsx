@@ -8,20 +8,36 @@ export default function SidebarFilter({
   allLocation = [],
   minPriceAll = 0,
   maxPriceAll = 100000,
-  onFilterChange = () => { },
+  onFilterChange = () => {},
 }) {
-  // State lokal
-  const [priceRange, setPriceRange] = useState([minPriceAll, maxPriceAll]);
+  const STEP = 1000;
+  const roundedMin = Math.floor(minPriceAll / STEP) * STEP;
+  const roundedMax = Math.ceil(maxPriceAll / STEP) * STEP;
+
+  // 🧠 Inisialisasi harga hanya sekali di awal
+  const [priceRange, setPriceRange] = useState(() => {
+    if (filter.priceRange?.length === 2) return filter.priceRange;
+    return [roundedMin, roundedMax];
+  });
+
   const [categories, setCategories] = useState(filter.categories);
   const [location, setLocation] = useState(filter.location);
   const [sortOption, setSortOption] = useState(filter.sortOption);
 
-  // Reset harga jika min/max berubah
+  // ❌ HAPUS efek reset harga otomatis — ganti dengan kondisi aman:
   useEffect(() => {
-    setPriceRange([minPriceAll, maxPriceAll]);
-  }, [minPriceAll, maxPriceAll]);
+    setPriceRange((prev) => {
+      if (
+        prev[0] === roundedMin &&
+        prev[1] === roundedMax
+      ) {
+        return prev; // tidak ubah kalau sama
+      }
+      return prev; // tidak reset lagi
+    });
+  }, [roundedMin, roundedMax]);
 
-  // Kirim perubahan ke parent
+  // 🔁 Kirim perubahan ke parent (Redux)
   useEffect(() => {
     onFilterChange({
       priceRange,
@@ -33,7 +49,6 @@ export default function SidebarFilter({
 
   return (
     <aside className="sticky top-16 w-72 h-[calc(100vh-4rem)] bg-white shadow-2xl p-6 overflow-y-auto rounded-r-2xl">
-
       {/* Harga */}
       <div>
         <h3 className="text-lg font-bold text-yellow-900 mb-2">Harga</h3>
@@ -41,9 +56,9 @@ export default function SidebarFilter({
           {formatRupiah(priceRange[0])} - {formatRupiah(priceRange[1])}
         </p>
         <Range
-          step={1000}
-          min={minPriceAll}
-          max={maxPriceAll}
+          step={STEP}
+          min={roundedMin || 0}
+          max={roundedMax || 1000000}
           values={priceRange}
           onChange={setPriceRange}
           renderTrack={({ props, children }) => (
@@ -54,8 +69,8 @@ export default function SidebarFilter({
                 background: getTrackBackground({
                   values: priceRange,
                   colors: ["#ddd", "#facc15", "#ddd"],
-                  min: minPriceAll,
-                  max: maxPriceAll,
+                  min: roundedMin,
+                  max: roundedMax,
                 }),
               }}
             >
@@ -94,10 +109,11 @@ export default function SidebarFilter({
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setCategories([])}
-            className={`px-3 py-1 rounded-full text-sm font-medium ${categories.length === 0
+            className={`px-3 py-1 rounded-full text-sm font-medium ${
+              categories.length === 0
                 ? "bg-yellow-700 text-white"
                 : "bg-gray-100 text-gray-800 hover:bg-yellow-100"
-              }`}
+            }`}
           >
             Semua
           </button>
@@ -111,8 +127,11 @@ export default function SidebarFilter({
                     active ? prev.filter((c) => c !== cat) : [...prev, cat]
                   )
                 }
-                className={`px-3 py-1 rounded-full text-sm font-medium ${active ? "bg-yellow-700 text-white" : "bg-gray-100 text-gray-800 hover:bg-yellow-100"
-                  }`}
+                className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  active
+                    ? "bg-yellow-700 text-white"
+                    : "bg-gray-100 text-gray-800 hover:bg-yellow-100"
+                }`}
               >
                 {cat}
               </button>
@@ -127,10 +146,11 @@ export default function SidebarFilter({
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setLocation([])}
-            className={`px-3 py-1 rounded-full text-sm font-medium ${location.length === 0
+            className={`px-3 py-1 rounded-full text-sm font-medium ${
+              location.length === 0
                 ? "bg-yellow-700 text-white"
                 : "bg-gray-100 text-gray-800 hover:bg-yellow-100"
-              }`}
+            }`}
           >
             Semua
           </button>
@@ -144,8 +164,11 @@ export default function SidebarFilter({
                     active ? prev.filter((l) => l !== loc) : [...prev, loc]
                   )
                 }
-                className={`px-3 py-1 rounded-full text-sm font-medium ${active ? "bg-yellow-700 text-white" : "bg-gray-100 text-gray-800 hover:bg-yellow-100"
-                  }`}
+                className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  active
+                    ? "bg-yellow-700 text-white"
+                    : "bg-gray-100 text-gray-800 hover:bg-yellow-100"
+                }`}
               >
                 {loc}
               </button>

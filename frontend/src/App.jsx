@@ -1,5 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Provider } from "react-redux";
+
 
 // Layouts
 import PublicLayout from "./components/layout/publicLayout";
@@ -18,7 +20,7 @@ import AdminLogin from "./pages/adminPages/AdminLogin";
 import AdminPage from "./pages/adminPages/AdminPage";
 import BarangPage from "./pages/adminPages/barangPage";
 import DashboardAdmin from "./pages/adminPages/DasboardAdmin";
-
+import CobaPage from "./pages/adminPages/CobaPage";
 // Pages - Misc
 import NotFound from "./pages/NotFound";
 
@@ -33,7 +35,7 @@ function App() {
           <Route path="services" element={<Services />} />
           <Route path="galeri">
             <Route index element={<Galeri />} />
-            <Route path=":id" element={<ItemDetailPage />} />
+            <Route path=":slug" element={<ItemDetailPage />} />
           </Route>
           <Route path="contact" element={<Contact />} />
           <Route path="*" element={<NotFound />} />
@@ -56,6 +58,14 @@ function App() {
           element={
             <AdminRoute>
               <BarangPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/tes"
+          element={
+            <AdminRoute>
+              <CobaPage />
             </AdminRoute>
           }
         />

@@ -1,7 +1,9 @@
 import Item from "../models/itemModel.js";
-import mongoose from "mongoose";
+import Category from "../models/categoryModel.js";
+import Location from "../models/locationModel.js";
 import cloudinary from "../config/cloudinary.js";
 
+// Helper upload ke Cloudinary
 const uploadToCloudinary = (fileBuffer) =>
   new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
@@ -11,73 +13,195 @@ const uploadToCloudinary = (fileBuffer) =>
     stream.end(fileBuffer);
   });
 
-// GET semua item
+// --- GET ALL ITEMS / FILTER ---
 export const getItems = async (req, res) => {
   try {
-    const { category, location, priceMin, priceMax, search } = req.query;
-    const filter = {};
+    const { category, location, minPrice, maxPrice, search } = req.query;
+    let filter = {};
 
     if (category) filter.category = category;
     if (location) filter.location = location;
-    if (priceMin) filter.price = { ...filter.price, $gte: Number(priceMin) };
-    if (priceMax) filter.price = { ...filter.price, $lte: Number(priceMax) };
+    if (minPrice || maxPrice) filter.price = {};
+    if (minPrice) filter.price.$gte = Number(minPrice);
+    if (maxPrice) filter.price.$lte = Number(maxPrice);
     if (search) filter.name = { $regex: search, $options: "i" };
 
-    const items = await Item.find(filter).sort({ createdAt: -1 });
-    res.json({ total: items.length, items });
+    const items = await Item.find(filter)
+      .populate("category", "name slug")
+      .populate("location", "name slug")
+      .sort({ createdAt: -1 });
+
+    res.json({ items });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    console.error("❌ Error getting items:", err);
+    res.status(500).json({ message: err.message || "Server error" });
   }
 };
 
-// POST tambah item
+// --- GET ITEMS META ---
+export const getItemsMeta = async (req, res) => {
+  try {
+    const count = await Item.countDocuments();
+    const prices = await Item.find().select("price -_id");
+    const priceList = prices.map((p) => p.price);
+    const meta = {
+      totalItems: count,
+      maxPrice: Math.max(...priceList),
+      minPrice: Math.min(...priceList),
+    };
+    res.json({ meta });
+  } catch (err) {
+    console.error("❌ Error getting items meta:", err);
+    res.status(500).json({ message: err.message || "Server error" });
+  }
+};
+
+// --- GET RECOMMENDATIONS (contoh: berdasarkan kategori sama lokasi) ---
+export const getRecommendations = async (req, res) => {
+  try {
+    const { category, location, excludeId } = req.query;
+    let filter = {};
+    if (category) filter.category = category;
+    if (location) filter.location = location;
+    if (excludeId) filter._id = { $ne: excludeId };
+
+    const recommendations = await Item.find(filter)
+      .limit(5)
+      .populate("category", "name slug")
+      .populate("location", "name slug");
+
+    res.json({ recommendations });
+  } catch (err) {
+    console.error("❌ Error getting recommendations:", err);
+    res.status(500).json({ message: err.message || "Server error" });
+  }
+};
+
+// --- CREATE ITEM ---
 export const createItem = async (req, res) => {
   try {
-    const { name, price, category, location } = req.body;
-    if (!name || !price || !req.file)
-      return res.status(400).json({ message: "Nama, harga, dan gambar wajib diisi" });
+    const { name, price, category, location, year, description } = req.body;
 
-    const result = await uploadToCloudinary(req.file.buffer);
+    if (!name || !price || !category || !location) {
+      return res.status(400).json({
+        message: "Nama, harga, kategori, dan lokasi wajib diisi",
+      });
+    }
+
+    if (isNaN(price)) {
+      return res.status(400).json({ message: "Price harus berupa angka" });
+    }
+
+    if (!req.files || req.files.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "Minimal 1 gambar wajib diupload" });
+    }
+
+    // Ambil key kategori & lokasi
+    const cat = await Category.findById(category);
+    const loc = await Location.findById(location);
+
+    if (!cat || !loc) {
+      return res
+        .status(400)
+        .json({ message: "Kategori atau lokasi tidak valid" });
+    }
+
+    const baseKey = `${cat.key}-${loc.key}`;
+
+    // Cari item terakhir dengan kombinasi yang sama
+    const lastItem = await Item.find({
+      customId: { $regex: `^${baseKey}-\\d{4}$` },
+    })
+      .sort({ customId: -1 })
+      .limit(1);
+
+    let nextNumber = "0001"; // default jika belum ada
+    if (lastItem.length > 0) {
+      const lastId = lastItem[0].customId;
+      const lastNum = parseInt(lastId.slice(-4));
+      nextNumber = String(lastNum + 1).padStart(4, "0");
+    }
+
+    const customId = `${baseKey}-${nextNumber}`;
+
+    // Upload gambar
+    const uploadedImages = await Promise.all(
+      req.files.map((file) => uploadToCloudinary(file.buffer))
+    );
+    const imageUrls = uploadedImages.map((img) => img.secure_url);
+
+    // Simpan item baru
     const newItem = new Item({
-      ...req.body,
+      name,
       price: Number(price),
-      imageUrl: result.secure_url,
+      category,
+      location,
+      customId,
+      year: year ? Number(year) : undefined,
+      description: description || "",
+      images: imageUrls,
     });
+
     await newItem.save();
-
-    res.status(201).json({ message: "Item berhasil ditambahkan", item: newItem });
+    res
+      .status(201)
+      .json({ message: "Item berhasil ditambahkan", item: newItem });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    console.error("❌ Error creating item:", err);
+    res.status(500).json({ message: err.message || "Server error" });
   }
 };
 
-// itemController.js
-export const getRecommendations = async (req, res) => {
-  const { id } = req.params;
-  const currentItem = await Item.findById(id);
-  if (!currentItem) return res.status(404).send("Item not found");
+// --- UPDATE ITEM ---
+export const updateItem = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = { ...req.body };
 
-  const sameCategory = await Item.find({
-    category: currentItem.category,
-    _id: { $ne: id },
-  }).limit(4);
+    const existingItem = await Item.findById(id);
+    if (!existingItem)
+      return res.status(404).json({ message: "Item not found" });
 
-  let recommendations = [...sameCategory];
+    if (req.files && req.files.length > 0) {
+      const uploadedImages = await Promise.all(
+        req.files.map((file) => uploadToCloudinary(file.buffer))
+      );
+      const newImageUrls = uploadedImages.map((img) => img.secure_url);
+      updateData.images = [...(existingItem.images || []), ...newImageUrls];
+    }
 
-  if (recommendations.length < 4) {
-    const limit = 4 - recommendations.length;
-    const sameLocation = await Item.find({
-      location: currentItem.location,
-      category: { $ne: currentItem.category },
-      _id: { $ne: id },
-    }).limit(limit);
+    if (updateData.price && isNaN(updateData.price)) {
+      return res.status(400).json({ message: "Price harus berupa angka" });
+    }
 
-    recommendations = [...recommendations, ...sameLocation];
+    const updatedItem = await Item.findByIdAndUpdate(id, updateData, {
+      new: true,
+    })
+      .populate("category", "name key slug")
+      .populate("location", "name key slug");
+
+    res.json({ message: "Item berhasil diupdate", item: updatedItem });
+  } catch (err) {
+    console.error("❌ Error updating item:", err);
+    res.status(500).json({ message: err.message || "Server error" });
   }
-
-  res.json(recommendations);
 };
 
+// --- DELETE ITEM ---
+export const deleteItem = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedItem = await Item.findByIdAndDelete(id);
 
+    if (!deletedItem) {
+      return res.status(404).json({ message: "Item tidak ditemukan" });
+    }
+
+    res.json({ message: "Item berhasil dihapus", item: deletedItem });
+  } catch (err) {
+    console.error("❌ Error deleting item:", err);
+    res.status(500).json({ message: err.message || "Server error" });
+  }
+};
